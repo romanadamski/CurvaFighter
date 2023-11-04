@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e9d9ecfba8f88344bcf6e3f0ea0e615, type: 3}
+  m_Name: Level1
+  m_EditorClassIdentifier: 
+  levelNumber: 1
+  backgroundImage: {fileID: 21300000, guid: 214a95978aa2c9543bc39a0520b49d02, type: 3}
+  activatePlayer: 1
+  mainPlayerObject:
+    objectStartPosition: {x: 0, y: 0}
+    objectStartRotation: {x: 0, y: 0, z: 0, w: 0}
+    shipLivesCount: 5
+    objectPrefab: {fileID: 3873032853012233273, guid: efa669ced34c1a441b38a6c6a6a04845, type: 3}
+  playerObjects: []
+  asteroidsReleasingFrequency:
+    item1: 1
+    item2: 3
+  asteroidsSpeedRange:
+    item1: 2
+    item2: 4
+  enemyObjects: []

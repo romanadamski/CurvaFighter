@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e9d9ecfba8f88344bcf6e3f0ea0e615, type: 3}
+  m_Name: Level6
+  m_EditorClassIdentifier: 
+  levelNumber: 6
+  backgroundImage: {fileID: 21300000, guid: 4bed6bae5faaf1147a9b16281532ad84, type: 3}
+  activatePlayer: 1
+  mainPlayerObject:
+    objectStartPosition: {x: 0, y: 0}
+    objectStartRotation: {x: 0, y: 0, z: 0, w: 0}
+    objectPrefab: {fileID: 3873032853012233273, guid: efa669ced34c1a441b38a6c6a6a04845, type: 3}
+  playerObjects:
+  - objectStartPosition: {x: -1, y: -3}
+    objectStartRotation: {x: 0, y: 0, z: 0, w: 0}
+    objectPrefab: {fileID: 3873032853012233273, guid: e60d856c3b2aac6479da44557cd98900, type: 3}
+  - objectStartPosition: {x: 8, y: -4.5}
+    objectStartRotation: {x: 0, y: 0, z: 0, w: 0}
+    objectPrefab: {fileID: 3873032853012233273, guid: 680dda8ae858d86448599cd2df750c39, type: 3}
+  asteroidsReleasingFrequency:
+    item1: 1
+    item2: 3
+  asteroidsSpeedRange:
+    item1: 1
+    item2: 3
+  enemyObjects:
+  - objectStartPosition: {x: 2, y: 3}
+    objectStartRotation: {x: 0, y: 0, z: 0, w: 0}
+    objectPrefab: {fileID: 3873032853012233273, guid: d0b6cdce508aa704082196090922d50b, type: 3}
+  - objectStartPosition: {x: 3, y: 2}
+    objectStartRotation: {x: 0, y: 0, z: 0, w: 0}
+    objectPrefab: {fileID: 3873032853012233273, guid: 5f3787515f1395c4dae547fd584f9723, type: 3}
