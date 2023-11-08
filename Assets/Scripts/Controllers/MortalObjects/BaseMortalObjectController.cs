@@ -1,11 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(InteractableController))]
 public abstract class BaseMortalObjectController : MonoBehaviour
 {
     [SerializeField]
-    protected bool immortal;
-    public bool Immortal => immortal;
+    protected bool infiniteLives;
+    public bool InfiniteLives => infiniteLives;
 
     [SerializeField]
     protected bool respawnable;
@@ -17,66 +19,50 @@ public abstract class BaseMortalObjectController : MonoBehaviour
     [SerializeField]
     protected float respawnDelay;
 
-    private string[] _enemyObjectsTags;
+    protected AudioController audioController;
 
-    protected bool _enemyCollideExited = true;
-    protected bool _enemyTriggerExited = true;
-
-    protected virtual void OnCollisionWithEnemyEnter(Collision2D collision) { }
-    protected virtual void OnCollisionWithEnemyExit(Collision2D collision) { }
-    protected virtual void OnTriggerWithEnemyEnter(Collider2D collider) { }
-    protected virtual void OnTriggerWithEnemyExit(Collider2D collider) { }
-    protected virtual string[] GetEnemies() { return new string[] { }; }
+    private InteractableController _interactable;
 
     public uint CurrentLivesCount { get; protected set; }
 
     private void Awake()
     {
-        _enemyObjectsTags = GetEnemies();
+        _interactable = GetComponent<InteractableController>();
+        audioController = GetComponent<AudioController>();
+        SubscribeToInteractableEvents();
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void SubscribeToInteractableEvents()
     {
-        if (!_enemyObjectsTags.Contains(collision.transform.tag)) return;
-        if (!gameObject.activeSelf) return;
-        if (!_enemyCollideExited) return;
-        
-        _enemyCollideExited = false;
+        _interactable.OnCollisionWithEnemyEnter += OnCollisionWithEnemyEnter;
+        _interactable.OnCollisionWithEnemyExit += OnCollisionWithEnemyExit;
+        _interactable.OnTriggerWithEnemyEnter += OnTriggerWithEnemyEnter;
+        _interactable.OnTriggerWithEnemyExit += OnTriggerWithEnemyExit;
+    }
+    //todo overriding
+    protected virtual void OnCollisionWithEnemyEnter(Collision2D collision2D)
+    {
         DecrementLive();
-        OnCollisionWithEnemyEnter(collision);
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    protected virtual void OnCollisionWithEnemyExit(Collision2D collision2D)
     {
-        if (!_enemyObjectsTags.Contains(collision.transform.tag)) return;
-
-        _enemyCollideExited = true;
-        OnCollisionWithEnemyExit(collision);
-    }
-
-    private void OnTriggerEnter2D(Collider2D collider)
-    {
-        if (!_enemyObjectsTags.Contains(collider.tag)) return;
-        if (!gameObject.activeSelf) return;
-        if (!_enemyTriggerExited) return;
-        
-        _enemyTriggerExited = false;
-
         DecrementLive();
-        OnTriggerWithEnemyEnter(collider);
     }
 
-    private void OnTriggerExit2D(Collider2D collider)
+    protected virtual void OnTriggerWithEnemyEnter(Collider2D collider2D)
     {
-        if (!_enemyObjectsTags.Contains(collider.tag)) return;
+        DecrementLive();
+    }
 
-        _enemyTriggerExited = true;
-        OnTriggerWithEnemyExit(collider);
+    protected virtual void OnTriggerWithEnemyExit(Collider2D collider2D)
+    {
+
     }
 
     protected void DecrementLive()
     {
-        if (!immortal && CurrentLivesCount > 0)
+        if (!infiniteLives && CurrentLivesCount > 0)
         {
             CurrentLivesCount--;
         }
@@ -85,7 +71,7 @@ public abstract class BaseMortalObjectController : MonoBehaviour
     protected void Respawn()
     {
         if (!respawnable ||
-            !immortal && CurrentLivesCount == 0) return;
+            !infiniteLives && CurrentLivesCount == 0) return;
         
         Invoke(nameof(DoRespawn), respawnDelay);
     }
@@ -93,5 +79,12 @@ public abstract class BaseMortalObjectController : MonoBehaviour
     private void DoRespawn()
     {
         gameObject.SetActive(true);
+    }
+
+    protected void PlayAudio()
+    {
+        if (!audioController) return;
+
+        audioController.PlayAudio();
     }
 }

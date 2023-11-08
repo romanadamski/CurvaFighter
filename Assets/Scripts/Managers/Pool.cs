@@ -6,23 +6,29 @@ using UnityEngine;
 [Serializable]
 public class Pool
 {
-    public int StartPoolCount;
-    public BasePoolableController PoolObjectPrefab;
-    public bool CanGrow;
-    public Queue<BasePoolableController> PooledObjects = new Queue<BasePoolableController>();
-    public Transform Parent;
+    [SerializeField]
+    private int startPoolCount;
+    public int StartPoolCount => startPoolCount;
+
+    [SerializeField]
+    private BasePoolableController poolObjectPrefab;
+    public BasePoolableController PoolObjectPrefab => poolObjectPrefab;
+
+    [SerializeField]
+    private bool canGrow;
+    public bool CanGrow => canGrow;
+
+    [SerializeField]
+    private Queue<BasePoolableController> pooledObjects = new Queue<BasePoolableController>();
+    public Queue<BasePoolableController> PooledObjects => pooledObjects;
+
+    [SerializeField]
+    private Transform parent;
+    public Transform Parent => parent;
+
     public string PoolableNameType => PoolObjectPrefab.GetComponent<BasePoolableController>().PoolableType;
 
-    [HideInInspector]
-    public int ObjectCount;
-
-    /// <summary>
-    /// Type choosen by attached Poolable component
-    /// </summary>
-    public Type PoolableComponentType => PoolObjectPrefab.GetType();
-
-    [HideInInspector]
-    public List<BasePoolableController> ObjectsOutsidePool = new List<BasePoolableController>();
+    public List<BasePoolableController> ObjectsOutsidePool { get; private set; } = new List<BasePoolableController>();
 
     public void ReturnAllToPool()
     {
@@ -40,5 +46,10 @@ public class Pool
             objectToReturn.gameObject.SetActive(false);
             PooledObjects.Enqueue(objectToReturn);
         }
+    }
+
+    public void SetParent(Transform parent)
+    {
+        this.parent = parent;
     }
 }

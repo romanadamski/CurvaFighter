@@ -5,4 +5,6 @@
     public const string PLAYER_BULLET = "PlayerBullet";
     public const string ENEMY_SHIP = "EnemyShip";
     public const string ENEMY_BULLET = "EnemyBullet";
+
+    public const string ALL = "ALL";
 }

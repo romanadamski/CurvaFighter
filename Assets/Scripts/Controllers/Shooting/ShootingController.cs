@@ -3,9 +3,7 @@ using UnityEngine;
 public class ShootingController : MonoBehaviour
 {
     [SerializeField]
-    private string bulletTypeName;
-    [SerializeField]
-    private ObjectPoolingController objectPoolingController;
+    private string bulletName;
 
     private ShootingTrigger _shootingTrigger;
 
@@ -35,7 +33,5 @@ public class ShootingController : MonoBehaviour
     }
 
     private BaseBulletMovementController GetBulletFromPool()
-    {
-        return objectPoolingController.GetFromPool().GetComponent<BaseBulletMovementController>();
-    }
+        => ShootingManager.Instance.ObjectPoolingController.GetFromPool(bulletName).GetComponent<BaseBulletMovementController>();
 }

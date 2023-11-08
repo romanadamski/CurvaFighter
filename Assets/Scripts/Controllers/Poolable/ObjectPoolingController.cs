@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zenject;
 
 public class ObjectPoolingController : MonoBehaviour
 {
@@ -8,11 +9,22 @@ public class ObjectPoolingController : MonoBehaviour
     private List<Pool> pools;
     public List<Pool> Pools => pools;
 
+    [SerializeField]
+    private bool isGameplayPooling;
+    public bool IsGameplayPooling => isGameplayPooling;
+    
+    [Inject]
+    private PoolsParent _poolsParent;
+
     private void Awake()
     {
         foreach (var pool in pools)
         {
             pool.PoolObjectPrefab.gameObject.SetActive(false);
+            if (!pool.Parent)
+            {
+                CreateParentForPool(pool);
+            }
 
             for (int i = 0; i < pool.StartPoolCount; i++)
             {
@@ -24,6 +36,13 @@ public class ObjectPoolingController : MonoBehaviour
         }
 
         ObjectPoolingManager.Instance.AddPoolController(this);
+    }
+
+    private void CreateParentForPool(Pool pool)
+    {
+        var newParent = new GameObject(pool.PoolableNameType);
+        pool.SetParent(newParent.transform);
+        newParent.transform.SetParent(_poolsParent.transform);
     }
 
     private void SetObjectName(GameObject poolableObject)
@@ -60,7 +79,7 @@ public class ObjectPoolingController : MonoBehaviour
             }
         }
     }
-    //todo return all controllers to pool
+
     /// <summary>
     /// Returns all objects to their pools
     /// </summary>
@@ -70,6 +89,11 @@ public class ObjectPoolingController : MonoBehaviour
         {
             pool.ReturnAllToPool();
         }
+    }
+
+    public void ReturnToPool(GameObject objectToReturn)
+    {
+        ReturnToPool(objectToReturn.GetComponent<BasePoolableController>());
     }
 
     public void ReturnToPool(BasePoolableController objectToReturn)

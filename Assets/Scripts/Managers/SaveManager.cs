@@ -7,13 +7,18 @@ public class SaveManager : BaseManager<SaveManager>
     private const string SAVE_KEY = "SAVE";
     private SaveData saveData;
 
+    private void Awake()
+    {
+        LoadSave();
+    }
+
     public void Save()
     {
         var saveString = JsonUtility.ToJson(saveData);
         PlayerPrefs.SetString(SAVE_KEY, saveString);
     }
 
-    public void LoadSave()
+    private void LoadSave()
     {
         var saveString = PlayerPrefs.GetString(SAVE_KEY);
         if (string.IsNullOrWhiteSpace(saveString))

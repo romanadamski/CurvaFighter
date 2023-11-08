@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zenject;
 
 public class UIManager : BaseManager<UIManager>
 {
@@ -8,6 +9,11 @@ public class UIManager : BaseManager<UIManager>
     private List<BaseMenu> menuPrefabs;
 
     private List<BaseMenu> _menus = new List<BaseMenu>();
+
+    [Inject]
+    private DiContainer _container;
+    [Inject]
+    private Canvas _canvas;
 
     private void Awake()
     {
@@ -19,7 +25,7 @@ public class UIManager : BaseManager<UIManager>
     {
         foreach (var menu in menuPrefabs)
         {
-            _menus.Add(Instantiate(menu, GameLauncher.Instance.Canvas.transform));
+            _menus.Add(_container.InstantiatePrefab(menu, _canvas.transform).GetComponent<BaseMenu>());
         }
     }
 

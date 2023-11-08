@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+using Zenject;
+//todo pooling / activate and deactivate systems - side by side
+//todo scoring system - now in mortal objects
 struct ShipData
 {
     public BaseMortalObjectController mortalShip;
@@ -34,6 +36,9 @@ public class GameplayManager : BaseManager<GameplayManager>
     public uint CurrentScore { get; private set; }
     public bool IsPaused => Time.deltaTime == 0;
 
+    [Inject]
+    private PoolsParent _poolsParent;
+
     private void Awake()
     {
         InitStates();
@@ -57,8 +62,7 @@ public class GameplayManager : BaseManager<GameplayManager>
 
     private void SubscribeToEvents()
     {
-        EventsManager.Instance.AsteroidShotted += ObjectShotted;
-        EventsManager.Instance.EnemyShotted += ObjectShotted;
+        EventsManager.Instance.Score += IncrementScore;
         EventsManager.Instance.PlayerLoseLife += PlayerLoseLife;
     }
 
@@ -95,17 +99,10 @@ public class GameplayManager : BaseManager<GameplayManager>
 
     public void ClearGameplay()
     {
-        //ObjectPoolingManager.Instance.ReturnAllToPools();
+        ObjectPoolingManager.Instance.ReturnAllToPools();
         DeactivatePlayer();
         DeactivateAllShips();
         AsteroidReleasingManager.Instance.StopReleasingAsteroidsCoroutine();
-    }
-
-    private void ObjectShotted(string tag)
-    {
-        if (!tag.Equals(GameObjectTagsConstants.PLAYER_BULLET)) return;
-
-        IncrementScore();
     }
 
     public void StartCurrentLevel()
@@ -149,7 +146,7 @@ public class GameplayManager : BaseManager<GameplayManager>
         var ships = new List<ShipData>();
         foreach (var ship in shipObjects)
         {
-            var shipInstance = Instantiate(ship.ObjectPrefab, GameLauncher.Instance.GamePlane.transform);
+            var shipInstance = Instantiate(ship.ObjectPrefab, _poolsParent.transform);
             shipInstance.gameObject.SetActive(true);
             shipInstance.transform.position = ship.ObjectStartPosition;
             shipInstance.transform.rotation = ship.ObjectStartRotation;
@@ -166,7 +163,7 @@ public class GameplayManager : BaseManager<GameplayManager>
     {
         foreach (var ship in shipObjects)
         {
-            if (!ship.mortalShip.Immortal && ship.mortalShip.CurrentLivesCount == 0) return;
+            if (!ship.mortalShip.InfiniteLives && ship.mortalShip.CurrentLivesCount == 0) return;
             
             ship.mortalShip.transform.position = ship.startPosition;
             ship.mortalShip.gameObject.SetActive(true);
@@ -176,7 +173,7 @@ public class GameplayManager : BaseManager<GameplayManager>
     private void SpawnPlayer()
     {
         _playerInstance = Instantiate(LevelSettingsManager.Instance.CurrentLevel.MainPlayerObject.ObjectPrefab,
-            GameLauncher.Instance.GamePlane.transform);
+            _poolsParent.transform);
     }
 
     private void ActivatePlayer()
