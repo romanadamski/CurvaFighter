@@ -34,31 +34,39 @@ public abstract class BaseMortalObjectController : MonoBehaviour
 
     private void SubscribeToInteractableEvents()
     {
-        _interactable.OnCollisionWithEnemyEnter += OnCollisionWithEnemyEnter;
-        _interactable.OnCollisionWithEnemyExit += OnCollisionWithEnemyExit;
-        _interactable.OnTriggerWithEnemyEnter += OnTriggerWithEnemyEnter;
-        _interactable.OnTriggerWithEnemyExit += OnTriggerWithEnemyExit;
+        _interactable.OnCollisionWithEnemyEnter += CollisionWithEnemyEnter;
+        _interactable.OnCollisionWithEnemyExit += CollisionWithEnemyExit;
+        _interactable.OnTriggerWithEnemyEnter += TriggerWithEnemyEnter;
+        _interactable.OnTriggerWithEnemyExit += TriggerWithEnemyExit;
     }
-    //todo overriding
-    protected virtual void OnCollisionWithEnemyEnter(Collision2D collision2D)
+
+    private void CollisionWithEnemyEnter(Collision2D collision2D)
     {
         DecrementLive();
+        OnCollisionWithEnemyEnter(collision2D);
     }
 
-    protected virtual void OnCollisionWithEnemyExit(Collision2D collision2D)
+    private void CollisionWithEnemyExit(Collision2D collision2D)
     {
         DecrementLive();
+        OnCollisionWithEnemyExit(collision2D);
     }
 
-    protected virtual void OnTriggerWithEnemyEnter(Collider2D collider2D)
+    private void TriggerWithEnemyEnter(Collider2D collider2D)
     {
         DecrementLive();
+        OnTriggerWithEnemyEnter(collider2D);
     }
 
-    protected virtual void OnTriggerWithEnemyExit(Collider2D collider2D)
+    private void TriggerWithEnemyExit(Collider2D collider2D)
     {
-
+        OnTriggerWithEnemyExit(collider2D);
     }
+
+    protected virtual void OnCollisionWithEnemyEnter(Collision2D collision2D) { }
+    protected virtual void OnCollisionWithEnemyExit(Collision2D collision2D) { }
+    protected virtual void OnTriggerWithEnemyEnter(Collider2D collider2D) { }
+    protected virtual void OnTriggerWithEnemyExit(Collider2D collider2D) { }
 
     protected void DecrementLive()
     {

@@ -27,7 +27,7 @@ public class AimMovementTrigger : MovementTrigger
         XDirection = direction.normalized.x;
         YDirection = direction.normalized.y;
     }
-
+    //todo find obejcts that appears later on screen
     private void GetTargetsByTag()
     {
         _targets = GameObject.FindGameObjectsWithTag(targetTag);
