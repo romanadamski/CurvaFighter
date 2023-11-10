@@ -22,7 +22,7 @@ public class LoseMenu : BaseMenu
     public override void Show()
     {
         base.Show();
-        currentScore.text = GameplayManager.Instance.CurrentScore.ToString();
+        //currentScore.text = GameplayManager.Instance.CurrentScore.ToString();
         highestScore.text = SaveManager.Instance.GetHighestScore().ToString();
     }
 

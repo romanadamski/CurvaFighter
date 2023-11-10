@@ -1,26 +1,7 @@
-using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
-//todo pooling / activate and deactivate systems - side by side
-//todo scoring system - now in mortal objects
-struct ShipData
-{
-    public BaseMortalObjectController mortalShip;
-    public Vector2 startPosition;
-
-    public ShipData(BaseMortalObjectController mortalShip, Vector2 startPosition)
-    {
-        this.mortalShip = mortalShip;
-        this.startPosition = startPosition;
-    }
-}
 
 public class GameplayManager : BaseManager<GameplayManager>
 {
-    private GameObject _playerInstance;
-    private List<ShipData> _playerShips = new List<ShipData>();
-    private List<ShipData> _enemyShips = new List<ShipData>();
-
     #region States
 
     private StateMachine _gameplayStateMachine;
@@ -32,12 +13,7 @@ public class GameplayManager : BaseManager<GameplayManager>
     public EndGameplayState EndGameplayState { get; private set; }
 
     #endregion
-
-    public uint CurrentScore { get; private set; }
     public bool IsPaused => Time.deltaTime == 0;
-
-    [Inject]
-    private PoolsParent _poolsParent;
 
     private void Awake()
     {
@@ -62,7 +38,6 @@ public class GameplayManager : BaseManager<GameplayManager>
 
     private void SubscribeToEvents()
     {
-        EventsManager.Instance.Score += IncrementScore;
         EventsManager.Instance.PlayerLoseLife += PlayerLoseLife;
     }
 
@@ -82,113 +57,27 @@ public class GameplayManager : BaseManager<GameplayManager>
     {
         ClearGameplay();
 
-        DestroyPlayer();
-        DestroyAllShips();
-        SaveScore();
         _gameplayStateMachine.SetState(LoseState);
-    }
-
-    public void SaveScore()
-    {
-        if (CurrentScore > 0)
-        {
-            SaveManager.Instance.AddScoreToHighscores(CurrentScore);
-            SaveManager.Instance.Save();
-        }
     }
 
     public void ClearGameplay()
     {
         ObjectPoolingManager.Instance.ReturnAllToPools();
-        DeactivatePlayer();
-        DeactivateAllShips();
         AsteroidReleasingManager.Instance.StopReleasingAsteroidsCoroutine();
     }
 
     public void StartCurrentLevel()
     {
-        ResetScore();
         LevelSettingsManager.Instance.SetCurrentLevel();
 
-        SpawnPlayer();
-        _playerShips.AddRange(SpawnShips(LevelSettingsManager.Instance.CurrentLevel.PlayerObjects));
-        _enemyShips.AddRange(SpawnShips(LevelSettingsManager.Instance.CurrentLevel.EnemyObjects));
-
         EventsManager.Instance.OnLevelStarted(LevelSettingsManager.Instance.CurrentLevel);
-    }
-
-    private void IncrementScore()
-    {
-        CurrentScore += GameSettingsManager.Instance.Settings.AsteroidShottedPoints;
-        EventsManager.Instance.OnScoreUpdated(CurrentScore);
-    }
-
-    private void ResetScore()
-    {
-        CurrentScore = 0;
-        EventsManager.Instance.OnScoreUpdated(CurrentScore);
     }
 
     public void StartGameplay()
     {
         ResumeGameplay();
-        ActivatePlayer();
-        ActivateShips(_playerShips);
-        ActivateShips(_enemyShips);
-
-        AsteroidReleasingManager.Instance.StartReleasingAsteroidCoroutine();
 
         EventsManager.Instance.OnGameplayStarted();
-    }
-
-    private List<ShipData> SpawnShips(List<ShipObject> shipObjects)
-    {
-        var ships = new List<ShipData>();
-        foreach (var ship in shipObjects)
-        {
-            var shipInstance = Instantiate(ship.ObjectPrefab, _poolsParent.transform);
-            shipInstance.gameObject.SetActive(true);
-            shipInstance.transform.position = ship.ObjectStartPosition;
-            shipInstance.transform.rotation = ship.ObjectStartRotation;
-
-            var shipData = new ShipData(shipInstance.GetComponent<BaseMortalObjectController>(), shipInstance.transform.position);
-
-            ships.Add(shipData);
-        }
-
-        return ships;
-    }
-    //todo handle activate/deactivate in one place
-    private void ActivateShips(List<ShipData> shipObjects)
-    {
-        foreach (var ship in shipObjects)
-        {
-            if (!ship.mortalShip.InfiniteLives && ship.mortalShip.CurrentLivesCount == 0) return;
-            
-            ship.mortalShip.transform.position = ship.startPosition;
-            ship.mortalShip.gameObject.SetActive(true);
-        }
-    }
-
-    private void SpawnPlayer()
-    {
-        _playerInstance = Instantiate(LevelSettingsManager.Instance.CurrentLevel.MainPlayerObject.ObjectPrefab,
-            _poolsParent.transform);
-    }
-
-    private void ActivatePlayer()
-    {
-        if (!_playerInstance) return;
-
-        if (!LevelSettingsManager.Instance.CurrentLevel.ActivatePlayer)
-        {
-            _playerInstance.gameObject.SetActive(false);
-            return;
-        }
-
-        _playerInstance.gameObject.SetActive(true);
-        _playerInstance.transform.position = LevelSettingsManager.Instance.CurrentLevel.MainPlayerObject.ObjectStartPosition;
-        _playerInstance.transform.rotation = LevelSettingsManager.Instance.CurrentLevel.MainPlayerObject.ObjectStartRotation;
     }
 
     public void SetGameplayState()
@@ -204,52 +93,7 @@ public class GameplayManager : BaseManager<GameplayManager>
     public void ClearGameplayStateMachine()
     {
         ClearGameplay();
-        DestroyPlayer();
-        DestroyAllShips();
         _gameplayStateMachine.Clear();
-    }
-
-    public void DeactivatePlayer()
-    {
-        if (_playerInstance == null) return;
-
-        _playerInstance.gameObject.SetActive(false);
-    }
-
-    public void DestroyPlayer()
-    {
-        if (_playerInstance == null) return;
-
-        Destroy(_playerInstance.gameObject);
-    }
-
-    public void DestroyAllShips()
-    {
-        foreach (var playerObject in _playerShips)
-        {
-            Destroy(playerObject.mortalShip.gameObject);
-        }
-
-        foreach (var playerObject in _enemyShips)
-        {
-            Destroy(playerObject.mortalShip.gameObject);
-        }
-
-        _playerShips.Clear();
-        _enemyShips.Clear();
-    }
-
-    public void DeactivateAllShips()
-    {
-        foreach (var playerShip in _playerShips)
-        {
-            playerShip.mortalShip.gameObject.SetActive(false);
-        }
-
-        foreach (var enemyShip in _enemyShips)
-        {
-            enemyShip.mortalShip.gameObject.SetActive(false);
-        }
     }
 
     public void PauseGameplay()
