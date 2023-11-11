@@ -3,9 +3,8 @@
 [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
 public abstract class BaseMovementController : MonoBehaviour
 {
-    [Range(1, 10)]
     [SerializeField]
-    protected float speedMultiplier;
+    protected MovementSettingsSO movementSettings;
 
     private SpriteRenderer _spriteRenderer;
     private Plane[] _cameraPlanes;

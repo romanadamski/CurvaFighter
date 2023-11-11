@@ -1,39 +1,87 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class PlayerMovementController : BaseMovementController
+[RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
+public class PlayerMovementController : MonoBehaviour
 {
-    private Vector2 MovementAxis => new Vector2(CalculateAxis(MovementTrigger.XDirection), CalculateAxis(MovementTrigger.YDirection));
+    [SerializeField]
+    protected MovementSettingsSO movementSettings;
 
-    private float CalculateAxis(float axis)
+    private Vector2 _jumpAxis;
+    private Rigidbody2D _rigidbody2D;
+    private PlayerInputActions _playerInputActions;
+    private Vector2 _movementAxis;
+    private bool _isPerformingMovement;
+
+    private void Awake()
     {
-        return axis * GameSettingsManager.Instance.Settings.PlayerMovementSpeed * (speedMultiplier / 5);
+        _rigidbody2D = GetComponent<Rigidbody2D>();
+        _playerInputActions = new PlayerInputActions();
+        _playerInputActions.Player.Enable();
+        SubscribeToInputActions();
     }
 
-    protected override void HandleMovement()
+    private void SubscribeToInputActions()
     {
-        _rigidbody2D.velocity = Vector2.Lerp(_rigidbody2D.velocity, MovementAxis, Time.deltaTime * GameSettingsManager.Instance.Settings.PlayerMovementPrecision);
+        _playerInputActions.Player.Jump.performed += Jump_performed;
+        _playerInputActions.Player.Jump.canceled += Jump_canceled;
+        _playerInputActions.Player.Movement.performed += Movement_performed;
+        _playerInputActions.Player.Movement.canceled += Movement_canceled;
+    }
+
+    private void Movement_performed(InputAction.CallbackContext context)
+    {
+        _isPerformingMovement = true;
+        var movement = context.ReadValue<Vector2>();
+        _movementAxis = new Vector2(movement.x, _jumpAxis.y);
+    }
+
+    private void Movement_canceled(InputAction.CallbackContext context)
+    {
+        _isPerformingMovement = false;
+        StopMovement();
+    }
+
+    private void FixedUpdate()
+    {
+        if (!_isPerformingMovement) return;
+
+        _rigidbody2D.velocity = Vector2.Lerp(_rigidbody2D.velocity, _movementAxis * movementSettings.MovementSpeed, Time.deltaTime * movementSettings.MovementPrecision);
+    }
+
+    private void Jump_performed(InputAction.CallbackContext context)
+    {
+        _jumpAxis = new Vector2(0, movementSettings.JumpForce);
+        _rigidbody2D.AddForce(_jumpAxis, ForceMode2D.Impulse);
+    }
+
+    private void Jump_canceled(InputAction.CallbackContext context)
+    {
+        _jumpAxis = Vector2.zero;
+    }
+
+    private void HandleMovement()
+    {
         Rotate();
-    }
-
-    protected override void OnOutsideScreen()
-    {
-        ScreenManager.Instance.HandleScreenEdgeCrossing(transform);
     }
 
     private void Rotate()
     {
         if (_rigidbody2D.velocity != Vector2.zero)
         {
-            float angle = Mathf.Atan2(-_rigidbody2D.velocity.x, _rigidbody2D.velocity.y) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Lerp(
-                transform.rotation,
-                Quaternion.AngleAxis(angle, Vector3.forward),
-                Time.deltaTime * GameSettingsManager.Instance.Settings.PlayerRotationSpeed);
+            
         }
     }
 
     private void OnDisable()
     {
         StopMovement();
+    }
+
+    private void StopMovement()
+    {
+        _rigidbody2D.velocity = Vector2.zero;
+        _rigidbody2D.angularVelocity = 0;
     }
 }
