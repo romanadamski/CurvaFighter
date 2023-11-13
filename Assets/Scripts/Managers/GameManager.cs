@@ -1,5 +1,11 @@
+using System;
+using UnityEngine;
+
 public class GameManager : BaseManager<GameManager>
 {
+    [SerializeField]
+    private InputReader inputReader;
+
     #region States
 
     private StateMachine gameStateMachine;
@@ -13,6 +19,23 @@ public class GameManager : BaseManager<GameManager>
     {
         InitStates();
         GoToMainMenu();
+        SubscribeToInputActions();
+    }
+
+    private void SubscribeToInputActions()
+    {
+        inputReader.SubmitEvent += HandleSubmit;
+        inputReader.ResumeEvent += HandleResume;
+    }
+
+    private void HandleSubmit()
+    {
+        Debug.Log("Submit!");
+    }
+
+    private void HandleResume()
+    {
+        Debug.Log("Resume!");
     }
 
     public void GoToMainMenu()

@@ -9,11 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bd0811cc6765104fa83db327e3cc258, type: 3}
-  m_Name: PlayerMovementSettings
+  m_Script: {fileID: 11500000, guid: 58ea89423fb4ae64fb6da211487abd34, type: 3}
+  m_Name: InputReader
   m_EditorClassIdentifier: 
-  movementSpeed: 10
-  maxMovementSpeed: 5
-  rotationSpeed: 1
-  movementPrecision: 10
-  jumpForce: 8

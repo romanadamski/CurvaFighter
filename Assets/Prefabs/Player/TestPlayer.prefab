@@ -162,3 +162,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSettings: {fileID: 11400000, guid: dbff677196c7a6744ae39e5cfc570df0, type: 2}
+  inputReader: {fileID: 11400000, guid: c36e345b32748474ea98d595358d35c3, type: 2}
