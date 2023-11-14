@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
+[RequireComponent(typeof(CharacterController), typeof(SpriteRenderer))]
 public class PlayerMovementController : MonoBehaviour
 {
     [SerializeField]
@@ -10,14 +10,18 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField]
     private InputReader inputReader;
 
+    private CharacterController _characterController;
+    private Animator _animator;
     private Vector2 _jumpAxis;
-    private Rigidbody2D _rigidbody2D;
     private Vector2 _movementAxis;
     private bool _isPerformingMovement;
 
+    private const string MOVE_FLAG = "IsMoving";
+
     private void Awake()
     {
-        _rigidbody2D = GetComponent<Rigidbody2D>();
+        _characterController = GetComponent<CharacterController>();
+        _animator = GetComponent<Animator>();
         
         SubscribeToInputActions();
     }
@@ -36,15 +40,46 @@ public class PlayerMovementController : MonoBehaviour
         inputReader.PauseEvent += HandlePause;
     }
 
-    private void HandleMovementPerformed()
+    private void FixedUpdate()
+    {
+        if (!_isPerformingMovement) return;
+
+        _characterController.Move(_movementAxis * Time.deltaTime * movementSettings.MovementSpeed);
+    }
+
+    private void Update()
+    {
+        HandleGravity();
+    }
+
+    private void HandleGravity()
+    {
+        if (_characterController.isGrounded)
+        {
+            _movementAxis.y = -.5f;
+        }
+        else
+        {
+            _movementAxis.y += -9.8f;
+        }
+    }
+
+    private void HandleMovement(Vector2 value)
+    {
+        _movementAxis = value;
+    }
+
+    private void HandleMovementPerformed(Vector2 value)
     {
         _isPerformingMovement = true;
+        _animator.SetBool(MOVE_FLAG, true);
+        Rotate(value);
     }
 
     private void HandleMovementCanceled()
     {
         _isPerformingMovement = false;
-        StopMovement();
+        _animator.SetBool(MOVE_FLAG, false);
     }
 
     private void HandlePause()
@@ -70,7 +105,6 @@ public class PlayerMovementController : MonoBehaviour
     private void HandleJumpPerformed()
     {
         _jumpAxis = new Vector2(0, movementSettings.JumpForce);
-        _rigidbody2D.AddForce(_jumpAxis/* * Mathf.Clamp(Mathf.Abs(_rigidbody2D.velocity.x), 1, Mathf.Abs(_rigidbody2D.velocity.x))*/, ForceMode2D.Impulse);
     }
 
     private void HandleJumpCanceled()
@@ -78,42 +112,15 @@ public class PlayerMovementController : MonoBehaviour
         _jumpAxis = Vector2.zero;
     }
 
-    private void HandleMovement(Vector2 value)
+    private void Rotate(Vector2 value)
     {
-        _movementAxis = value;
-    }
-
-    private void FixedUpdate()
-    {
-        if (!_isPerformingMovement) return;
-
-        _rigidbody2D.AddForce( _movementAxis * movementSettings.MovementSpeed);
-    }
-
-    private void Update()
-    {
-        if (Mathf.Abs(_rigidbody2D.velocity.x) > movementSettings.MaxMovementSpeed)
+        if (value.x > 0)
         {
-            _rigidbody2D.velocity = Vector2.ClampMagnitude(_rigidbody2D.velocity, movementSettings.MaxMovementSpeed);
+            transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
         }
-    }
-
-    private void Rotate()
-    {
-        if (_rigidbody2D.velocity != Vector2.zero)
+        if (value.x < 0)
         {
-            
+            transform.rotation = Quaternion.Euler(Vector3.zero);
         }
-    }
-
-    private void OnDisable()
-    {
-        StopMovement();
-    }
-
-    private void StopMovement()
-    {
-        _rigidbody2D.velocity = Vector2.zero;
-        _rigidbody2D.angularVelocity = 0;
     }
 }

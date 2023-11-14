@@ -8,10 +8,6 @@ public class MovementSettingsSO : ScriptableObject
     public float MovementSpeed => movementSpeed;
 
     [SerializeField]
-    private float maxMovementSpeed;
-    public float MaxMovementSpeed => maxMovementSpeed;
-
-    [SerializeField]
     private float rotationSpeed;
     public float RotationSpeed => rotationSpeed;
 

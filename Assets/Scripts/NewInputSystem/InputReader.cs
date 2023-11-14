@@ -33,7 +33,7 @@ public class InputReader : ScriptableObject, GameplayInputActions.IGameplayActio
     }
 
     public event Action<Vector2> MovementEvent;
-    public event Action MovementPerformedEvent;
+    public event Action<Vector2> MovementPerformedEvent;
     public event Action MovementCanceledEvent;
 
     public event Action JumpPerformedEvent;
@@ -82,10 +82,11 @@ public class InputReader : ScriptableObject, GameplayInputActions.IGameplayActio
 
     public void OnMovement(InputAction.CallbackContext context)
     {
-        MovementEvent?.Invoke(context.ReadValue<Vector2>());
+        var movementDirection = context.ReadValue<Vector2>();
+        MovementEvent?.Invoke(movementDirection);
         if (context.phase == InputActionPhase.Performed)
         {
-            MovementPerformedEvent?.Invoke();
+            MovementPerformedEvent?.Invoke(movementDirection);
         }
         if (context.phase == InputActionPhase.Canceled)
         {
