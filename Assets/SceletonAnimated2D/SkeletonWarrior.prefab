@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 312320201983474581}
   - component: {fileID: 312320201983474580}
   - component: {fileID: 2583868864144058874}
-  - component: {fileID: 4295647696595661360}
-  m_Layer: 0
+  - component: {fileID: 8106931324518739224}
+  - component: {fileID: 288509044813119210}
+  m_Layer: 6
   m_Name: SkeletonWarrior
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,13 +124,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSettings: {fileID: 11400000, guid: dbff677196c7a6744ae39e5cfc570df0, type: 2}
   inputReader: {fileID: 11400000, guid: c36e345b32748474ea98d595358d35c3, type: 2}
---- !u!143 &4295647696595661360
-CharacterController:
+--- !u!68 &8106931324518739224
+EdgeCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 312320201983474571}
+  m_Enabled: 1
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -138,17 +141,47 @@ CharacterController:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
-  m_ProvidesContacts: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: 0.76530415, y: 5.125186}
+  - {x: 1.7239397, y: 3.8619208}
+  - {x: 1.6254859, y: 0}
+  - {x: 0.09927546, y: 0}
+  - {x: -1.84911, y: 3.1173985}
+  - {x: 0.21536744, y: 5.100908}
+  - {x: 0.7667738, y: 5.1189685}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0
+--- !u!114 &288509044813119210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 312320201983474571}
   m_Enabled: 1
-  serializedVersion: 3
-  m_Height: 5.15
-  m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0.59, y: 2.57, z: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81dc14236a705ae49838265e56586f11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &635410477
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -157,9 +190,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 312320201983474570}
     m_Modifications:
+    - target: {fileID: -9154527239812441831, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -8695416825521746284, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: -8653719598885068355, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
       propertyPath: m_Name
       value: SkeletonWarriorPSB
+      objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
       propertyPath: m_RootOrder
@@ -217,6 +262,10 @@ PrefabInstance:
       propertyPath: m_Bounds.m_Extent.y
       value: 0.5749999
       objectReference: {fileID: 0}
+    - target: {fileID: -6627991806376485586, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: -6475803495974218742, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
       propertyPath: m_Bounds.m_Center.x
       value: 0.0000003874302
@@ -229,9 +278,29 @@ PrefabInstance:
       propertyPath: m_Bounds.m_Extent.x
       value: 0.37499994
       objectReference: {fileID: 0}
+    - target: {fileID: -6353377721804257713, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -5341255190241664994, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -4754474320992827179, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: -4754474320992827179, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3895301677808602323, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -3842843038193574287, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -2925370357911809791, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
       propertyPath: m_Bounds.m_Center.x
@@ -261,6 +330,18 @@ PrefabInstance:
       propertyPath: m_Bounds.m_Extent.x
       value: 0.36591002
       objectReference: {fileID: 0}
+    - target: {fileID: -1634460402733385943, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -1442219665397089643, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -1240721892719223032, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: -1152263794579118782, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
       propertyPath: m_Bounds.m_Center.x
       value: 0.00028508902
@@ -272,6 +353,10 @@ PrefabInstance:
     - target: {fileID: -1152263794579118782, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
       propertyPath: m_Bounds.m_Extent.x
       value: 0.899715
+      objectReference: {fileID: 0}
+    - target: {fileID: -928052642852442122, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8570390066375703, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
       propertyPath: m_Bounds.m_Center.x
@@ -285,6 +370,10 @@ PrefabInstance:
       propertyPath: m_Bounds.m_Extent.x
       value: 0.37499994
       objectReference: {fileID: 0}
+    - target: {fileID: 1226124329523337095, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 1232240213116269087, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
       propertyPath: m_Bounds.m_Center.x
       value: 0.000045120716
@@ -297,6 +386,38 @@ PrefabInstance:
       propertyPath: m_Bounds.m_Extent.y
       value: 0.54357004
       objectReference: {fileID: 0}
+    - target: {fileID: 1596357972171728719, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1769465101944927738, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051267256004627935, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2525390988781625368, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3222224187075034928, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3998968543168752965, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5083098595846003475, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373421126793663741, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7865728278067164518, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
       propertyPath: m_Bounds.m_Center.x
       value: 0.001275003
@@ -308,6 +429,14 @@ PrefabInstance:
     - target: {fileID: 7865728278067164518, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
       propertyPath: m_Bounds.m_Extent.x
       value: 0.758725
+      objectReference: {fileID: 0}
+    - target: {fileID: 7954077674782031436, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8409989685861773982, guid: 00c875278ffc1df4a964f827d0ce626f, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

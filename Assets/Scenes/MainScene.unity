@@ -266,7 +266,7 @@ GameObject:
   - component: {fileID: 399952013}
   - component: {fileID: 399952015}
   - component: {fileID: 399952014}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BigBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3640,7 +3640,7 @@ GameObject:
   m_Component:
   - component: {fileID: 458791786}
   - component: {fileID: 458791785}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3869,7 +3869,7 @@ GameObject:
   - component: {fileID: 767421518}
   - component: {fileID: 767421517}
   - component: {fileID: 767421516}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5137,7 +5137,7 @@ GameObject:
   - component: {fileID: 2138893224}
   - component: {fileID: 2138893226}
   - component: {fileID: 2138893225}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5756,7 +5756,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 312320201983474570, guid: af8372814d3915847a2d6b83ba8b3dfe, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.634
+      value: -1.86
       objectReference: {fileID: 0}
     - target: {fileID: 312320201983474570, guid: af8372814d3915847a2d6b83ba8b3dfe, type: 3}
       propertyPath: m_LocalPosition.z

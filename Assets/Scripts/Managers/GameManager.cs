@@ -40,7 +40,7 @@ public class GameManager : BaseManager<GameManager>
 
     public void GoToMainMenu()
     {
-        gameStateMachine.SetState(MainMenuState);
+        //gameStateMachine.SetState(MainMenuState);
     }
 
     private void InitStates()

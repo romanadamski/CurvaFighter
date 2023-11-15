@@ -1,8 +1,6 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.InputSystem;
+﻿using UnityEngine;
 
-[RequireComponent(typeof(CharacterController), typeof(SpriteRenderer))]
+[RequireComponent(typeof(SpriteRenderer))]
 public class PlayerMovementController : MonoBehaviour
 {
     [SerializeField]
@@ -10,106 +8,127 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField]
     private InputReader inputReader;
 
-    private CharacterController _characterController;
     private Animator _animator;
-    private Vector2 _jumpAxis;
+    private GroundCheck _groundCheck;
+    private float _jumpVelocity;
     private Vector2 _movementAxis;
     private bool _isPerformingMovement;
+    private bool _isJumping;
+    private float _jumpStartHeight;
 
     private const string MOVE_FLAG = "IsMoving";
 
     private void Awake()
     {
-        _characterController = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
+        _groundCheck = GetComponent<GroundCheck>();
         
         SubscribeToInputActions();
     }
 
     private void SubscribeToInputActions()
     {
-        inputReader.MovementEvent += HandleMovement;
-        inputReader.MovementPerformedEvent += HandleMovementPerformed;
-        inputReader.MovementCanceledEvent += HandleMovementCanceled;
-        inputReader.MovementEvent += HandleMovement;
-        inputReader.JumpPerformedEvent += HandleJumpPerformed;
-        inputReader.JumpCanceledEvent += HandleJumpCanceled;
-        inputReader.FirePerformedEvent += HandleFirePerformed;
-        inputReader.FireCanceledEvent += HandleFireCanceled;
-        inputReader.InventoryEvent += HandleInventory;
-        inputReader.PauseEvent += HandlePause;
-    }
-
-    private void FixedUpdate()
-    {
-        if (!_isPerformingMovement) return;
-
-        _characterController.Move(_movementAxis * Time.deltaTime * movementSettings.MovementSpeed);
+        inputReader.MovementEvent += Input_HandleMovement;
+        inputReader.MovementPerformedEvent += Input_HandleMovementPerformed;
+        inputReader.MovementCanceledEvent += Input_HandleMovementCanceled;
+        inputReader.JumpPerformedEvent += Input_HandleJumpPerformed;
+        inputReader.JumpCanceledEvent += Input_HandleJumpCanceled;
+        inputReader.FirePerformedEvent += Input_HandleFirePerformed;
+        inputReader.FireCanceledEvent += Input_HandleFireCanceled;
+        inputReader.InventoryEvent += Input_HandleInventory;
+        inputReader.PauseEvent += Input_HandlePause;
     }
 
     private void Update()
     {
-        HandleGravity();
+        HandleJumpVelocity();
     }
 
-    private void HandleGravity()
+    private void HandleJumpVelocity()
     {
-        if (_characterController.isGrounded)
+        _jumpVelocity += movementSettings.Gravity * movementSettings.GravityScale * Time.deltaTime;
+        if (_groundCheck.IsGrounded && _jumpVelocity < 0)
         {
-            _movementAxis.y = -.5f;
+            _jumpVelocity = 0;
+            transform.position = new Vector3(transform.position.x, _groundCheck.SurfacePosition.y);
         }
-        else
+        if (transform.position.y > _jumpStartHeight + movementSettings.MaxJumpHeight)
         {
-            _movementAxis.y += -9.8f;
+            _isJumping = false;
+        }
+        if (_isJumping)
+        {
+            _jumpVelocity = movementSettings.JumpForce;
         }
     }
 
-    private void HandleMovement(Vector2 value)
+    private void FixedUpdate()
+    {
+        UpdateJumpingPosition();
+        UpdateMovementPosition();
+    }
+
+    private void UpdateMovementPosition()
+    {
+        if (!_isPerformingMovement) return;
+
+        transform.position += new Vector3(_movementAxis.x * movementSettings.MovementSpeed, 0) * Time.deltaTime;
+    }
+
+    private void UpdateJumpingPosition()
+    {
+        transform.position += new Vector3(0, _jumpVelocity) * Time.deltaTime;
+    }
+
+    private void Input_HandleJumpPerformed()
+    {
+        if (!_groundCheck.IsGrounded) return;
+
+        _isJumping = true;
+        _jumpStartHeight = transform.position.y;
+    }
+
+    private void Input_HandleJumpCanceled()
+    {
+        _isJumping = false;
+    }
+
+    private void Input_HandleMovement(Vector2 value)
     {
         _movementAxis = value;
     }
 
-    private void HandleMovementPerformed(Vector2 value)
+    private void Input_HandleMovementPerformed(Vector2 value)
     {
         _isPerformingMovement = true;
         _animator.SetBool(MOVE_FLAG, true);
         Rotate(value);
     }
 
-    private void HandleMovementCanceled()
+    private void Input_HandleMovementCanceled()
     {
         _isPerformingMovement = false;
         _animator.SetBool(MOVE_FLAG, false);
     }
 
-    private void HandlePause()
+    private void Input_HandlePause()
     {
         Debug.Log("Pauza");
     }
 
-    private void HandleInventory()
+    private void Input_HandleInventory()
     {
         Debug.Log("Otwieram ekpifunek");
     }
 
-    private void HandleFirePerformed()
+    private void Input_HandleFirePerformed()
     {
         Debug.Log("Zaczynam szczelać!");
     }
 
-    private void HandleFireCanceled()
+    private void Input_HandleFireCanceled()
     {
         Debug.Log("Kończę szczelać!");
-    }
-
-    private void HandleJumpPerformed()
-    {
-        _jumpAxis = new Vector2(0, movementSettings.JumpForce);
-    }
-
-    private void HandleJumpCanceled()
-    {
-        _jumpAxis = Vector2.zero;
     }
 
     private void Rotate(Vector2 value)
