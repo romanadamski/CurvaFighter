@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovementController : MonoBehaviour
 {
     [SerializeField]
@@ -8,21 +8,24 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField]
     private InputReader inputReader;
 
+    private Rigidbody2D _rigidbody2D;
     private Animator _animator;
     private GroundCheck _groundCheck;
-    private float _jumpVelocity;
-    private Vector2 _movementAxis;
+
+    private Vector2 _movementVelocity;
     private bool _isPerformingMovement;
-    private bool _isJumping;
-    private float _jumpStartHeight;
+    private float _defaultGravityScale;
 
     private const string MOVE_FLAG = "IsMoving";
 
     private void Awake()
     {
         _animator = GetComponent<Animator>();
+        _rigidbody2D = GetComponent<Rigidbody2D>();
         _groundCheck = GetComponent<GroundCheck>();
-        
+
+        _defaultGravityScale = _rigidbody2D.gravityScale;
+
         SubscribeToInputActions();
     }
 
@@ -32,7 +35,6 @@ public class PlayerMovementController : MonoBehaviour
         inputReader.MovementPerformedEvent += Input_HandleMovementPerformed;
         inputReader.MovementCanceledEvent += Input_HandleMovementCanceled;
         inputReader.JumpPerformedEvent += Input_HandleJumpPerformed;
-        inputReader.JumpCanceledEvent += Input_HandleJumpCanceled;
         inputReader.FirePerformedEvent += Input_HandleFirePerformed;
         inputReader.FireCanceledEvent += Input_HandleFireCanceled;
         inputReader.InventoryEvent += Input_HandleInventory;
@@ -41,30 +43,19 @@ public class PlayerMovementController : MonoBehaviour
 
     private void Update()
     {
-        HandleJumpVelocity();
-    }
+        if (_groundCheck.IsGrounded)
+        {
+            _rigidbody2D.gravityScale = _defaultGravityScale;
+        }
 
-    private void HandleJumpVelocity()
-    {
-        _jumpVelocity += movementSettings.Gravity * movementSettings.GravityScale * Time.deltaTime;
-        if (_groundCheck.IsGrounded && _jumpVelocity < 0)
+        if (!_groundCheck.IsGrounded && _rigidbody2D.velocity.y < 0)
         {
-            _jumpVelocity = 0;
-            transform.position = new Vector3(transform.position.x, _groundCheck.SurfacePosition.y);
-        }
-        if (transform.position.y > _jumpStartHeight + movementSettings.MaxJumpHeight)
-        {
-            _isJumping = false;
-        }
-        if (_isJumping)
-        {
-            _jumpVelocity = movementSettings.JumpForce;
+            _rigidbody2D.gravityScale = movementSettings.LandingForce;
         }
     }
 
     private void FixedUpdate()
     {
-        UpdateJumpingPosition();
         UpdateMovementPosition();
     }
 
@@ -72,30 +63,20 @@ public class PlayerMovementController : MonoBehaviour
     {
         if (!_isPerformingMovement) return;
 
-        transform.position += new Vector3(_movementAxis.x * movementSettings.MovementSpeed, 0) * Time.deltaTime;
-    }
-
-    private void UpdateJumpingPosition()
-    {
-        transform.position += new Vector3(0, _jumpVelocity) * Time.deltaTime;
+        _rigidbody2D.velocity = Vector3.Lerp(_rigidbody2D.velocity, new Vector3(_movementVelocity.x * movementSettings.MovementSpeed, 0), Time.deltaTime * movementSettings.MovementPrecision);
     }
 
     private void Input_HandleJumpPerformed()
     {
         if (!_groundCheck.IsGrounded) return;
 
-        _isJumping = true;
-        _jumpStartHeight = transform.position.y;
-    }
-
-    private void Input_HandleJumpCanceled()
-    {
-        _isJumping = false;
+        _rigidbody2D.gravityScale = _defaultGravityScale;
+        _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, movementSettings.JumpForce + (2 * movementSettings.JumpForce * Mathf.Abs(_rigidbody2D.velocity.x * 100)) / 100);
     }
 
     private void Input_HandleMovement(Vector2 value)
     {
-        _movementAxis = value;
+        _movementVelocity = value;
     }
 
     private void Input_HandleMovementPerformed(Vector2 value)
@@ -109,6 +90,13 @@ public class PlayerMovementController : MonoBehaviour
     {
         _isPerformingMovement = false;
         _animator.SetBool(MOVE_FLAG, false);
+        StopMovement();
+    }
+
+    private void StopMovement()
+    {
+        _rigidbody2D.velocity = Vector3.zero;
+        _rigidbody2D.angularVelocity = 0;
     }
 
     private void Input_HandlePause()

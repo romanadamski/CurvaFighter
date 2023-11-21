@@ -18,17 +18,8 @@ public class MovementSettingsSO : ScriptableObject
     [SerializeField]
     private float jumpForce;
     public float JumpForce => jumpForce;
-    [SerializeField]
-
-    private float maxJumpHeight;
-    public float MaxJumpHeight => maxJumpHeight;
 
     [SerializeField]
-    private float gravity = -9.81f;
-    public float Gravity => gravity;
-
-    [SerializeField]
-    private float gravityScale;
-    public float GravityScale => gravityScale;
-
+    private float landingForce;
+    public float LandingForce => landingForce;
 }

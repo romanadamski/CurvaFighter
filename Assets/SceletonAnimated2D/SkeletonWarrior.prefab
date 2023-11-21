@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 312320201983474581}
   - component: {fileID: 312320201983474580}
   - component: {fileID: 2583868864144058874}
+  - component: {fileID: 1183206893049039918}
   - component: {fileID: 8106931324518739224}
-  - component: {fileID: 288509044813119210}
+  - component: {fileID: 380644309848768937}
   m_Layer: 6
   m_Name: SkeletonWarrior
   m_TagString: Untagged
@@ -124,6 +125,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSettings: {fileID: 11400000, guid: dbff677196c7a6744ae39e5cfc570df0, type: 2}
   inputReader: {fileID: 11400000, guid: c36e345b32748474ea98d595358d35c3, type: 2}
+--- !u!50 &1183206893049039918
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 312320201983474571}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!68 &8106931324518739224
 EdgeCollider2D:
   m_ObjectHideFlags: 0
@@ -170,7 +198,7 @@ EdgeCollider2D:
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
   m_UseAdjacentEndPoint: 0
---- !u!114 &288509044813119210
+--- !u!114 &380644309848768937
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
