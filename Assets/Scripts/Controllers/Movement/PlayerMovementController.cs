@@ -71,7 +71,7 @@ public class PlayerMovementController : MonoBehaviour
         if (!_groundCheck.IsGrounded) return;
 
         _rigidbody2D.gravityScale = _defaultGravityScale;
-        _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, movementSettings.JumpForce + (2 * movementSettings.JumpForce * Mathf.Abs(_rigidbody2D.velocity.x * 100)) / 100);
+        _rigidbody2D.velocity = new Vector2(0, movementSettings.JumpForce + movementSettings.JumpForce * Mathf.Abs(_rigidbody2D.velocity.x));
     }
 
     private void Input_HandleMovement(Vector2 value)
